@@ -1,0 +1,9 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* ISA Dark Mode Base */
+body {
+  background-color: #0F172A !important;
+  overflow: hidden;
+}
