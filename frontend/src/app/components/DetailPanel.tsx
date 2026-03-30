@@ -82,7 +82,11 @@ function InsightDetails({ item }: any) {
             initial={{ width: 0 }}
             animate={{ width: `${item.confidence}%` }}
             transition={{ duration: 1, delay: 0.3 }}
-            className={`h-full ${colors.bg.replace('/10', '/30')} rounded-full`}
+            className={`h-full rounded-full ${
+  item.confidence >= 80 ? 'bg-green-500' :
+  item.confidence >= 50 ? 'bg-yellow-500' :
+  'bg-red-500'
+}`}
           />
         </div>
       </div>
@@ -109,6 +113,74 @@ function InsightDetails({ item }: any) {
 }
 
 function FileDetails({ item }: any) {
+  // File type extension se nikalo
+  const ext = item.name?.split('.').pop()?.toUpperCase() || "Unknown";
+  const fileTypeMap: any = {
+    "ZIP": "Compressed Archive",
+    "EXE": "Executable Program",
+    "MP4": "Video File",
+    "MP3": "Audio File",
+    "PDF": "PDF Document",
+    "DAT": "Data File",
+    "VHDX": "Virtual Disk Image",
+    "BAT": "Batch Script",
+    "MSI": "Installer Package",
+    "LOG": "Log File",
+    "TMP": "Temporary File",
+    "JS": "JavaScript File",
+    "TS": "TypeScript File",
+    "JSON": "JSON Data File",
+  };
+  const fileType = fileTypeMap[ext] || `${ext} File`;
+
+  // Last accessed format karo
+  const lastAccessed = item.last_accessed
+    ? new Date(item.last_accessed).toLocaleDateString("en-IN", {
+        day: "numeric", month: "short", year: "numeric"
+      })
+    : "Never accessed";
+
+  // Size
+  const sizeMb = item.size_mb || 0;
+  const sizeDisplay = sizeMb > 1024
+    ? `${(sizeMb / 1024).toFixed(1)} GB`
+    : `${sizeMb} MB`;
+
+  // Safety — junk = safe, baki = review
+  const isSafe = item.reason?.includes("cache") || item.reason?.includes("junk") || item.reason?.includes("temp");
+
+  // AI Analysis — intelligent, file ke hisaab se
+  const getAiAnalysis = () => {
+  const lastModifiedStr = item.last_modified
+    ? new Date(item.last_modified).toLocaleDateString("en-IN", {
+        day: "numeric", month: "short", year: "numeric"
+      })
+    : null;
+
+  const daysSinceAccess = item.last_accessed
+    ? Math.floor((Date.now() - new Date(item.last_accessed).getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+
+  const timeInfo = [
+    lastModifiedStr ? `Last modified: ${lastModifiedStr}.` : null,
+    daysSinceAccess !== null ? `Last accessed ${daysSinceAccess} days ago.` : null,
+  ].filter(Boolean).join(" ");
+
+  if (item.unused_days) {
+    return `${timeInfo} This ${fileType.toLowerCase()} has not been accessed in ${item.unused_days} days and may no longer be needed. Review before deleting.`;
+  }
+  if (sizeMb > 1000) {
+    return `${timeInfo} This is a large ${fileType.toLowerCase()} taking up ${sizeDisplay} of storage. If you no longer need it, deleting it will free significant space.`;
+  }
+  if (item.reason?.includes("cache") || item.reason?.includes("temp")) {
+    return `${timeInfo} This is a temporary/cache file (${ext}). It was auto-generated and is safe to delete without affecting your data.`;
+  }
+  if (["EXE","BAT","MSI","CMD","PS1"].includes(ext)) {
+    return `${timeInfo} This is an executable file (${ext}). Be careful — only delete if you are sure you no longer need this program or installer.`;
+  }
+  return `${timeInfo} This ${fileType.toLowerCase()} is flagged for review. Check if you still need it before deleting.`;
+};
+
   return (
     <div className="space-y-6">
       {/* File Icon & Name */}
@@ -117,54 +189,57 @@ function FileDetails({ item }: any) {
           <FileText className="w-12 h-12 text-blue-400" />
         </div>
         <h4 className="text-lg font-semibold text-white mb-2 break-words">{item.name}</h4>
-        <div className="text-2xl font-bold text-blue-400 mb-1">{item.size}</div>
+        <div className="text-2xl font-bold text-blue-400 mb-1">{sizeDisplay}</div>
       </div>
 
       {/* File Info */}
       <div className="glass-card p-5 rounded-2xl space-y-4">
         <div>
           <div className="text-white/40 text-xs mb-1">File Type</div>
-          <div className="text-white text-sm">Temporary Cache File</div>
+          <div className="text-white text-sm">{fileType}</div>
         </div>
         <div>
           <div className="text-white/40 text-xs mb-1">Location</div>
           <div className="text-white/60 text-xs font-mono break-all">
-            {item.group || "/System/Library/Caches"}
+            {item.path || item.group || "Unknown"}
           </div>
         </div>
         <div>
           <div className="text-white/40 text-xs mb-1">Last Accessed</div>
           <div className="flex items-center gap-2 text-white text-sm">
             <Clock className="w-4 h-4 text-white/40" />
-            {item.lastUsed}
+            {lastAccessed}
           </div>
         </div>
+        {item.unused_days && (
+          <div>
+            <div className="text-white/40 text-xs mb-1">Unused For</div>
+            <div className="text-yellow-400 text-sm font-medium">{item.unused_days} days</div>
+          </div>
+        )}
       </div>
 
-      {/* AI Explanation */}
+      {/* AI Analysis — intelligent */}
       <div className="glass-card p-5 rounded-2xl border border-blue-500/20">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
           <span className="text-white font-medium text-sm">AI Analysis</span>
         </div>
         <p className="text-white/70 text-sm leading-relaxed">
-          This is a temporary cache file created by the system. It has not been used for {item.lastUsed}. 
-          Based on our analysis, this file is safe to delete and will help free up storage space without 
-          affecting your system's functionality.
+          {getAiAnalysis()}
         </p>
       </div>
 
       {/* Safety Assessment */}
-      <div className="flex items-center gap-3 p-4 rounded-2xl bg-green-500/10 border border-green-500/20">
-        <ShieldCheck className="w-6 h-6 text-green-400" />
-        <div>
-          <div className="text-green-400 font-medium text-sm">Safe to Delete</div>
-          <div className="text-white/60 text-xs">92% confidence</div>
+      {isSafe ? (
+        <div className="flex items-center gap-3 p-4 rounded-2xl bg-green-500/10 border border-green-500/20">
+          <ShieldCheck className="w-6 h-6 text-green-400" />
+          <div>
+            <div className="text-green-400 font-medium text-sm">Safe to Delete</div>
+            <div className="text-white/60 text-xs">Auto-generated file, safe to remove</div>
+          </div>
         </div>
-      </div>
-
-      {/* Warning if not safe */}
-      {!item.safe && (
+      ) : (
         <div className="flex items-center gap-3 p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20">
           <AlertTriangle className="w-6 h-6 text-yellow-400" />
           <div>

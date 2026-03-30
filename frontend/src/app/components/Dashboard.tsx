@@ -10,7 +10,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { useOutletContext } from "react-router";
-import { getSummary } from "../../api";
+import { getSummary, trashAllFiles } from "../../api";
 
 export function Dashboard() {
   const [progress, setProgress] = useState(0);
@@ -85,9 +85,9 @@ useEffect(() => {
   id: 4,
   icon: AlertTriangle,
   title: "Risky Files",
-  value: `${scanData.unused_files.count} files`,
-  count: "unused 90+ days",
-  insight: "Files not accessed in a long time",
+  value: `${scanData.risky_files.count} files`,
+count: `${scanData.risky_files.count} files`,
+insight: "Executables & scripts — verify before keeping",
   color: "red",
   action: "Review",
   confidence: 78
@@ -318,9 +318,18 @@ function InsightCard({ item, index, onClick }: any) {
         <div className={`p-3 rounded-2xl ${colors.bg}`}>
           <Icon className={`w-6 h-6 ${colors.icon}`} />
         </div>
-        <div className="text-xs text-white/50 bg-white/5 px-2 py-1 rounded-lg">
-          {item.confidence}% confident
-        </div>
+        <div className="flex flex-col items-end gap-1">
+  <span className="text-xs text-white/50">{item.confidence}% confident</span>
+  <div className="w-24 h-1.5 rounded-full bg-white/10">
+    <div
+      className={`h-1.5 rounded-full ${
+        item.confidence >= 85 ? "bg-green-500" :
+        item.confidence >= 70 ? "bg-yellow-500" : "bg-red-500"
+      }`}
+      style={{ width: `${item.confidence}%` }}
+    />
+  </div>
+</div>
       </div>
 
       <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
@@ -332,9 +341,38 @@ function InsightCard({ item, index, onClick }: any) {
 
       <p className="text-white/60 text-sm mb-4 leading-relaxed">{item.insight}</p>
 
-      <button className={`w-full py-2.5 rounded-xl ${colors.bg} ${colors.text} font-medium text-sm transition-all duration-200 hover:brightness-125`}>
-        {item.action}
-      </button>
+      <button 
+  onClick={async (e) => {
+    e.stopPropagation();
+    if(item.action === "Clean") {
+  if(window.confirm(`Kya aap saare ${item.count} junk files delete karna chahte ho? Yeh trash mein jayenge — undo kar sakte ho.`)) {
+    try {
+      const summary = await getSummary("C:/Users/maxab/Downloads");
+      const paths = summary.junk_files.files.map((f: any) => f.path);
+      await trashAllFiles(paths);
+      alert(`${paths.length} files trash mein gayi! ✅`);
+      window.location.reload();
+    } catch(err) {
+      alert("Error aaya — backend chal raha hai?");
+    }
+  }
+  return;
+}
+if(item.action === "Review") {
+  const categoryMap: any = {
+    "Large Files": "large",
+    "Unused Files": "unused", 
+    "Risky Files": "risky",
+    "Junk Files": "junk",
+  };
+  const cat = categoryMap[item.title] || "junk";
+  window.location.href = `/files?category=${cat}`;
+}
+  }}
+  className={`w-full py-2.5 rounded-xl ${colors.bg} ${colors.text} font-medium text-sm transition-all duration-200 hover:brightness-125`}
+>
+  {item.action}
+</button>
     </motion.div>
   );
 }

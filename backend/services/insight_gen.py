@@ -3,13 +3,66 @@ from datetime import datetime, timezone
 
 # Yeh extensions = junk files hoti hain mostly
 JUNK_EXTENSIONS = {
-    ".tmp", ".temp", ".log", ".cache", ".bak",
-    ".old", ".dmp", ".chk", ".thumbs", ".ds_store",
+    ".tmp",
+    ".temp",
+    ".log",
+    ".cache",
+    ".bak",
+    ".old",
+    ".dmp",
+    ".chk",
+    ".thumbs",
+    ".ds_store",
 }
 
 # Yeh folders mein milne wali files = junk
 JUNK_FOLDERS = {
-    "temp", "tmp", "cache", "recycle", "trash"
+    "temp",
+    "tmp",
+    "cache",
+    "recycle",
+    "trash",
+    ".cache",
+    "__pycache__",
+    "node_modules/.cache",
+}
+
+# Yeh files kabhi junk nahi — chahe kahan bhi hon
+SAFE_EXTENSIONS = {
+    ".pdf",
+    ".docx",
+    ".doc",
+    ".xlsx",
+    ".xls",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".mp4",
+    ".mp3",
+    ".zip",
+    ".rar",
+}
+
+# Risky executables / scripts
+RISKY_EXTENSIONS = {
+    ".exe",
+    ".dll",
+    ".bat",
+    ".cmd",
+    ".msi",
+    ".com",
+    ".scr",
+    ".js",
+    ".vbs",
+    ".ps1",
+    ".psm1",
+    ".psd1",
+    ".sh",
+    ".jar",
+    ".py",
+    ".rb",
+    ".pl",
+    ".apk",
 }
 
 
@@ -36,7 +89,8 @@ def get_junk_files(files: list) -> list:
         is_junk_ext = ext in JUNK_EXTENSIONS
         is_junk_folder = any(j in path_lower for j in JUNK_FOLDERS)
 
-        if is_junk_ext or is_junk_folder:
+        is_safe_file = ext in SAFE_EXTENSIONS
+        if (is_junk_ext or is_junk_folder) and not is_safe_file:
             junk.append({**f, "reason": _junk_reason(ext, path_lower)})
 
     return junk
@@ -65,6 +119,24 @@ def get_unused_files(files: list, days: int = 90) -> list:
     return unused
 
 
+def get_risky_files(files: list) -> list:
+    """
+    Risky files dhundho — executables, scripts etc.
+    """
+    risky = []
+    for f in files:
+        ext = f.get("extension", "").lower()
+        if ext in RISKY_EXTENSIONS:
+            risky.append(
+                {
+                    **f,
+                    "reason": f"Executable/script file: {ext} — verify before keeping",
+                }
+            )
+    risky.sort(key=lambda x: x["size_mb"], reverse=True)
+    return risky
+
+
 def generate_summary(files: list) -> dict:
     """
     Poore scan ka summary banao — dashboard ke liye.
@@ -72,10 +144,12 @@ def generate_summary(files: list) -> dict:
     large = get_large_files(files)
     junk = get_junk_files(files)
     unused = get_unused_files(files)
+    risky = get_risky_files(files)
 
     total_size = sum(f["size_mb"] for f in files)
     junk_size = sum(f["size_mb"] for f in junk)
     large_size = sum(f["size_mb"] for f in large)
+    risky_size = sum(f["size_mb"] for f in risky)
 
     return {
         "total_files": len(files),
@@ -93,6 +167,10 @@ def generate_summary(files: list) -> dict:
         "unused_files": {
             "count": len(unused),
             "files": unused[:10],
+        },
+        "risky_files": {
+            "count": len(risky),
+            "files": risky[:10],
         },
         "potential_savings_mb": round(junk_size + large_size, 2),
     }

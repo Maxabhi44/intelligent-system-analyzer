@@ -1,5 +1,5 @@
 // Backend ka base URL
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = (import.meta.env?.VITE_API_URL as string) || "http://127.0.0.1:8000";
 
 // Scan shuru karo
 export async function startScan(path: string) {
@@ -45,4 +45,12 @@ export async function undoTrash(trash_id: string) {
 export async function getTrashItems() {
   const res = await fetch(`${BASE_URL}/api/cleanup/trash`);
   return res.json();
+}
+
+// Saari junk files ek saath trash mein bhejo
+export async function trashAllFiles(file_paths: string[]) {
+  const results = await Promise.all(
+    file_paths.map(path => trashFile(path))
+  );
+  return results;
 }
