@@ -10,9 +10,27 @@ import {
   AlertCircle
 } from "lucide-react";
 import { useOutletContext } from "react-router";
+import { getSummary } from "../../api";
 
 export function Dashboard() {
   const [progress, setProgress] = useState(0);
+  const [scanData, setScanData] = useState<any>(null);
+const [loading, setLoading] = useState(false);
+
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const data = await getSummary("C:/Users/maxab/Downloads");
+      setScanData(data);
+    } catch (err) {
+      console.error("Backend se data nahi aaya:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, []);
   const { setSelectedItem } = useOutletContext<any>();
 
   // Animate progress on mount
@@ -27,13 +45,15 @@ export function Dashboard() {
     message: "System running optimally"
   };
 
-  const insights = [
+  const insights = scanData ? [
     {
       id: 1,
       icon: Trash2,
       title: "Junk Files",
-      value: "2.3 GB",
-      count: "847 files",
+      value: scanData.junk_files.size_mb > 1024 
+  ? `${(scanData.junk_files.size_mb / 1024).toFixed(1)} GB`
+  : `${scanData.junk_files.size_mb.toFixed(0)} MB`,
+      count: `${scanData.junk_files.count} files`,
       insight: "Temporary cache and system files taking up space",
       color: "blue",
       action: "Clean",
@@ -43,8 +63,8 @@ export function Dashboard() {
       id: 2,
       icon: HardDrive,
       title: "Large Files",
-      value: "8.7 GB",
-      count: "23 files",
+      value: `${(scanData.large_files.size_mb / 1024).toFixed(1)} GB`,
+      count: `${scanData.large_files.count} files`,
       insight: "Files over 100MB that you might want to review",
       color: "purple",
       action: "Review",
@@ -54,23 +74,68 @@ export function Dashboard() {
       id: 3,
       icon: Clock,
       title: "Unused Files",
-      value: "1.2 GB",
-      count: "312 files",
+      value: `${scanData.unused_files.count} files`,
+      count: `${scanData.unused_files.count} files`,
       insight: "Not accessed in the last 90 days",
       color: "yellow",
       action: "Review",
       confidence: 82
     },
     {
+  id: 4,
+  icon: AlertTriangle,
+  title: "Risky Files",
+  value: `${scanData.unused_files.count} files`,
+  count: "unused 90+ days",
+  insight: "Files not accessed in a long time",
+  color: "red",
+  action: "Review",
+  confidence: 78
+}
+  ] : [
+    {
+      id: 1,
+      icon: Trash2,
+      title: "Junk Files",
+      value: "Scanning...",
+      count: "",
+      insight: "Loading data from backend...",
+      color: "blue",
+      action: "Clean",
+      confidence: 0
+    },
+    {
+      id: 2,
+      icon: HardDrive,
+      title: "Large Files",
+      value: "Scanning...",
+      count: "",
+      insight: "Loading data from backend...",
+      color: "purple",
+      action: "Review",
+      confidence: 0
+    },
+    {
+      id: 3,
+      icon: Clock,
+      title: "Unused Files",
+      value: "Scanning...",
+      count: "",
+      insight: "Loading data from backend...",
+      color: "yellow",
+      action: "Review",
+      confidence: 0
+    },
+    {
       id: 4,
       icon: AlertTriangle,
       title: "Risky Files",
-      value: "456 MB",
-      count: "12 files",
-      insight: "Duplicate or potentially unnecessary files detected",
+      value: "Scanning...",
+      count: "",
+      insight: "Loading data from backend...",
       color: "red",
       action: "Review",
-      confidence: 78
+      confidence: 0
     }
   ];
 
