@@ -24,16 +24,20 @@ app = FastAPI(
 # CORS — frontend se connect hone ke liye
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Routes register karo
-app.include_router(scan.router,     prefix="/api/scan",     tags=["Scanner"])
+app.include_router(scan.router, prefix="/api/scan", tags=["Scanner"])
 app.include_router(insights.router, prefix="/api/insights", tags=["Insights"])
-app.include_router(cleanup.router,  prefix="/api/cleanup",  tags=["Cleanup"])
+app.include_router(cleanup.router, prefix="/api/cleanup", tags=["Cleanup"])
 app.include_router(settings.router, prefix="/api/settings", tags=["Settings"])
 
 
