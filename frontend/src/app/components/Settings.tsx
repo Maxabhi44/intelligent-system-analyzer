@@ -9,20 +9,46 @@ export function Settings() {
   const [notifications, setNotifications] = useState(true);
 
   return (
-    <div className="min-h-screen p-8">
+    <div
+      className="min-h-screen"
+      style={{ padding: "var(--space-xl)" }}
+    >
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <SettingsIcon className="w-8 h-8 text-blue-400" />
-          <h2 className="text-3xl font-semibold text-white">Settings</h2>
+      <div style={{ marginBottom: "var(--space-lg)" }}>
+        <div
+          className="flex items-center"
+          style={{ gap: "var(--space-sm)", marginBottom: "var(--space-xs)" }}
+        >
+          <SettingsIcon
+            style={{ width: "var(--icon-xl)", height: "var(--icon-xl)" }}
+            className="text-blue-400"
+          />
+          <h2
+            className="font-semibold text-white"
+            style={{ fontSize: "var(--text-hero)" }}
+          >
+            Settings
+          </h2>
         </div>
-        <p className="text-white/50">Customize ISA to work your way</p>
+        <p
+          className="text-white/50"
+          style={{ fontSize: "var(--text-sm)" }}
+        >
+          Customize ISA to work your way
+        </p>
       </div>
 
-      <div className="max-w-3xl space-y-6">
+      <div
+        style={{
+          maxWidth: "var(--content-max-w)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--space-md)",
+        }}
+      >
         {/* Scan Modes */}
         <Section title="Scan Modes" description="Choose how ISA analyzes your system">
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-sm)" }}>
             <ScanModeOption
               id="quick"
               icon={Zap}
@@ -56,7 +82,7 @@ export function Settings() {
 
         {/* Features */}
         <Section title="Features" description="Enable or disable advanced features">
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-sm)" }}>
             <ToggleOption
               icon={Code2}
               title="Developer Mode"
@@ -70,7 +96,7 @@ export function Settings() {
 
         {/* Safety Settings */}
         <Section title="Safety & Security" description="Protect your important data">
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-sm)" }}>
             <ToggleOption
               icon={Shield}
               title="Enable Backup Before Delete"
@@ -92,17 +118,48 @@ export function Settings() {
 
         {/* About */}
         <Section title="About" description="Application information">
-          <div className="glass-card p-6 rounded-2xl">
-            <div className="flex items-center justify-between mb-4">
+          <div
+            className="glass-card rounded-2xl"
+            style={{ padding: "var(--card-padding)" }}
+          >
+            <div
+              className="flex items-center justify-between"
+              style={{ marginBottom: "var(--space-sm)" }}
+            >
               <div>
-                <div className="text-white font-semibold mb-1">Intelligent System Analyzer</div>
-                <div className="text-white/60 text-sm">Version 2.0.1</div>
+                <div
+                  className="text-white font-semibold"
+                  style={{
+                    fontSize: "var(--text-base)",
+                    marginBottom: "var(--space-xs)",
+                  }}
+                >
+                  Intelligent System Analyzer
+                </div>
+                <div
+                  className="text-white/60"
+                  style={{ fontSize: "var(--text-sm)" }}
+                >
+                  Version 2.0.1
+                </div>
               </div>
-              <div className="text-xs text-white/40 bg-white/5 px-3 py-1.5 rounded-lg">
+              <div
+                className="text-white/40 bg-white/5 rounded-lg"
+                style={{
+                  fontSize: "var(--text-xs)",
+                  paddingLeft: "var(--space-sm)",
+                  paddingRight: "var(--space-sm)",
+                  paddingTop: "var(--space-xs)",
+                  paddingBottom: "var(--space-xs)",
+                }}
+              >
                 Up to date
               </div>
             </div>
-            <div className="text-white/50 text-sm">
+            <div
+              className="text-white/50"
+              style={{ fontSize: "var(--text-sm)" }}
+            >
               © 2026 ISA. AI-powered system intelligence tool.
             </div>
           </div>
@@ -117,11 +174,25 @@ function Section({ title, description, children }: any) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card p-6 rounded-3xl"
+      className="glass-card rounded-3xl"
+      style={{ padding: "var(--card-padding)" }}
     >
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold text-white mb-1">{title}</h3>
-        <p className="text-white/50 text-sm">{description}</p>
+      <div style={{ marginBottom: "var(--space-md)" }}>
+        <h3
+          className="font-semibold text-white"
+          style={{
+            fontSize: "var(--text-xl)",
+            marginBottom: "var(--space-xs)",
+          }}
+        >
+          {title}
+        </h3>
+        <p
+          className="text-white/50"
+          style={{ fontSize: "var(--text-sm)" }}
+        >
+          {description}
+        </p>
       </div>
       {children}
     </motion.div>
@@ -134,19 +205,22 @@ function ScanModeOption({ id, icon: Icon, title, description, isSelected, onClic
       bg: "bg-yellow-500/10",
       border: "border-yellow-500/30",
       icon: "text-yellow-400",
-      glow: "shadow-yellow-500/20"
+      glow: "shadow-yellow-500/20",
+      dot: "bg-yellow-400",
     },
     blue: {
       bg: "bg-blue-500/10",
       border: "border-blue-500/30",
       icon: "text-blue-400",
-      glow: "shadow-blue-500/20"
+      glow: "shadow-blue-500/20",
+      dot: "bg-blue-400",
     },
     purple: {
       bg: "bg-purple-500/10",
       border: "border-purple-500/30",
       icon: "text-purple-400",
-      glow: "shadow-purple-500/20"
+      glow: "shadow-purple-500/20",
+      dot: "bg-purple-400",
     },
   };
 
@@ -157,38 +231,72 @@ function ScanModeOption({ id, icon: Icon, title, description, isSelected, onClic
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
       onClick={onClick}
-      className={`relative p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${
+      className={`relative rounded-2xl border-2 cursor-pointer transition-all duration-200 ${
         isSelected
           ? `${colors.border} ${colors.bg} shadow-lg ${colors.glow}`
           : "border-white/10 bg-white/5 hover:border-white/20"
       }`}
+      style={{ padding: "var(--space-sm)" }}
     >
       {recommended && (
-        <div className="absolute -top-2 right-4 px-2 py-0.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-medium rounded-full">
+        <div
+          className="absolute -top-2 right-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-full"
+          style={{
+            fontSize: "var(--text-xs)",
+            paddingLeft: "var(--space-xs)",
+            paddingRight: "var(--space-xs)",
+            paddingTop: "2px",
+            paddingBottom: "2px",
+          }}
+        >
           Recommended
         </div>
       )}
-      
-      <div className="flex items-center gap-4">
-        <div className={`p-3 rounded-xl ${isSelected ? colors.bg : "bg-white/5"}`}>
-          <Icon className={`w-6 h-6 ${isSelected ? colors.icon : "text-white/40"}`} />
-        </div>
-        
-        <div className="flex-1">
-          <div className="text-white font-medium mb-1">{title}</div>
-          <div className="text-white/60 text-sm">{description}</div>
+
+      <div
+        className="flex items-center"
+        style={{ gap: "var(--space-sm)" }}
+      >
+        <div className={`rounded-xl ${isSelected ? colors.bg : "bg-white/5"}`}
+          style={{ padding: "var(--space-sm)" }}
+        >
+          <Icon
+            style={{ width: "var(--icon-lg)", height: "var(--icon-lg)" }}
+            className={isSelected ? colors.icon : "text-white/40"}
+          />
         </div>
 
+        <div className="flex-1">
+          <div
+            className="text-white font-medium"
+            style={{
+              fontSize: "var(--text-base)",
+              marginBottom: "var(--space-xs)",
+            }}
+          >
+            {title}
+          </div>
+          <div
+            className="text-white/60"
+            style={{ fontSize: "var(--text-sm)" }}
+          >
+            {description}
+          </div>
+        </div>
+
+        {/* Radio dot */}
         <div
-          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+          className={`rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
             isSelected ? `${colors.border} ${colors.bg}` : "border-white/20"
           }`}
+          style={{ width: "var(--icon-sm)", height: "var(--icon-sm)" }}
         >
           {isSelected && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className={`w-2.5 h-2.5 rounded-full ${colors.icon.replace('text-', 'bg-')}`}
+              className={`rounded-full ${colors.dot}`}
+              style={{ width: "var(--space-xs)", height: "var(--space-xs)" }}
             />
           )}
         </div>
@@ -207,26 +315,51 @@ function ToggleOption({ icon: Icon, title, description, isEnabled, onChange, col
   const colors = colorClasses[color as keyof typeof colorClasses];
 
   return (
-    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors duration-200">
-      <div className={`p-3 rounded-xl ${colors.bg}`}>
-        <Icon className={`w-6 h-6 ${colors.icon}`} />
-      </div>
-      
-      <div className="flex-1">
-        <div className="text-white font-medium mb-1">{title}</div>
-        <div className="text-white/60 text-sm">{description}</div>
+    <div
+      className="flex items-center rounded-2xl bg-white/5 hover:bg-white/10 transition-colors duration-200"
+      style={{
+        gap: "var(--space-sm)",
+        padding: "var(--space-sm)",
+      }}
+    >
+      <div className={`rounded-xl ${colors.bg}`} style={{ padding: "var(--space-sm)" }}>
+        <Icon
+          style={{ width: "var(--icon-lg)", height: "var(--icon-lg)" }}
+          className={colors.icon}
+        />
       </div>
 
+      <div className="flex-1">
+        <div
+          className="text-white font-medium"
+          style={{
+            fontSize: "var(--text-base)",
+            marginBottom: "var(--space-xs)",
+          }}
+        >
+          {title}
+        </div>
+        <div
+          className="text-white/60"
+          style={{ fontSize: "var(--text-sm)" }}
+        >
+          {description}
+        </div>
+      </div>
+
+      {/* Toggle Switch */}
       <button
         onClick={() => onChange(!isEnabled)}
-        className={`relative w-14 h-8 rounded-full transition-all duration-300 ${
+        className={`relative rounded-full transition-all duration-300 flex-shrink-0 ${
           isEnabled ? "bg-gradient-to-r from-blue-500 to-purple-600" : "bg-white/10"
         }`}
+        style={{ width: "3.5rem", height: "2rem" }}
       >
         <motion.div
           animate={{ x: isEnabled ? 26 : 2 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="absolute top-1 w-6 h-6 bg-white rounded-full shadow-lg"
+          className="absolute top-1 bg-white rounded-full shadow-lg"
+          style={{ width: "1.5rem", height: "1.5rem" }}
         />
       </button>
     </div>

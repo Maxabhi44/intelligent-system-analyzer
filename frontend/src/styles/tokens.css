@@ -1,0 +1,331 @@
+/* ============================================================
+   ISA — Responsive Token System
+   Usage: var(--token-name)
+   All values scale fluidly between min window (900px) and max (1920px)
+   Import this in index.css BEFORE everything else
+   ============================================================ */
+
+:root {
+  /* ─── SPACING ─────────────────────────────────────────────
+     Use these for padding, margin, gap everywhere
+     xs → xxl scales from tight (small window) to roomy (large)
+  ──────────────────────────────────────────────────────────── */
+  --space-xs: clamp(2px, 0.3vw, 4px);
+  --space-sm: clamp(4px, 0.5vw, 8px);
+  --space-md: clamp(8px, 1vw, 16px);
+  --space-lg: clamp(12px, 1.5vw, 24px);
+  --space-xl: clamp(16px, 2vw, 32px);
+  --space-xxl: clamp(24px, 3vw, 48px);
+
+  /* ─── FONT SIZES ──────────────────────────────────────────
+     Use these for ALL text in the app — never hardcode px
+  ──────────────────────────────────────────────────────────── */
+  --text-xs: clamp(9px, 0.7vw, 11px); /* badges, version number */
+  --text-sm: clamp(10px, 0.8vw, 12px); /* secondary labels, hints */
+  --text-base: clamp(11px, 0.9vw, 14px); /* body text, file names */
+  --text-md: clamp(12px, 1vw, 15px); /* nav labels, buttons */
+  --text-lg: clamp(13px, 1.1vw, 17px); /* section headings */
+  --text-xl: clamp(15px, 1.3vw, 20px); /* card titles */
+  --text-xxl: clamp(18px, 1.8vw, 28px); /* page headings, scores */
+  --text-hero: clamp(24px, 3vw, 48px); /* big numbers, hero stats */
+
+  /* ─── ICON SIZES ──────────────────────────────────────────
+     Use these for ALL lucide icons — w-[var(--icon-sm)] etc
+  ──────────────────────────────────────────────────────────── */
+  --icon-xs: clamp(12px, 1vw, 14px);
+  --icon-sm: clamp(14px, 1.2vw, 16px);
+  --icon-md: clamp(16px, 1.4vw, 20px);
+  --icon-lg: clamp(20px, 1.8vw, 24px);
+  --icon-xl: clamp(24px, 2.5vw, 36px);
+  --icon-hero: clamp(32px, 4vw, 56px);
+
+  /* ─── BORDER RADIUS ───────────────────────────────────────
+     Consistent rounding throughout app
+  ──────────────────────────────────────────────────────────── */
+  --radius-sm: clamp(6px, 0.5vw, 8px);
+  --radius-md: clamp(8px, 0.8vw, 12px);
+  --radius-lg: clamp(12px, 1vw, 16px);
+  --radius-xl: clamp(16px, 1.5vw, 24px);
+  --radius-full: 9999px;
+
+  /* ─── SIDEBAR ─────────────────────────────────────────────
+     Sidebar width scales — collapses to icon-only on small windows
+  ──────────────────────────────────────────────────────────── */
+  --sidebar-width: clamp(52px, 14vw, 220px);
+  --sidebar-icon-only: 52px; /* below this → only icons shown */
+  --sidebar-full: 160px; /* above this → full labels shown */
+
+  /* ─── DETAIL PANEL ────────────────────────────────────────
+     Side panel width — always visible on desktop (min 1280px)
+  ──────────────────────────────────────────────────────────── */
+  --panel-width: clamp(240px, 22vw, 320px);
+
+  /* ─── LAYOUT ──────────────────────────────────────────────
+     Main content area constraints
+  ──────────────────────────────────────────────────────────── */
+  --content-padding: clamp(12px, 2vw, 32px);
+  --content-gap: clamp(8px, 1.2vw, 20px);
+  --card-padding: clamp(10px, 1.5vw, 24px);
+  --card-gap: clamp(8px, 1vw, 16px);
+
+  /* ─── BUTTONS ─────────────────────────────────────────────
+     Button padding scales — stays clickable on all sizes
+  ──────────────────────────────────────────────────────────── */
+  --btn-px: clamp(10px, 1.2vw, 20px);
+  --btn-py: clamp(6px, 0.7vw, 12px);
+  --btn-py-sm: clamp(4px, 0.5vw, 8px);
+
+  /* ─── SCORE CIRCLES ───────────────────────────────────────
+     Dashboard score card circle sizes
+  ──────────────────────────────────────────────────────────── */
+  --circle-size: clamp(80px, 10vw, 140px);
+  --circle-stroke: clamp(6px, 0.8vw, 10px);
+  --circle-text: clamp(18px, 2.5vw, 36px);
+  --circle-label: clamp(9px, 0.7vw, 12px);
+
+  /* ─── FILE LIST ───────────────────────────────────────────
+     File item row spacing and sizing
+  ──────────────────────────────────────────────────────────── */
+  --file-item-py: clamp(8px, 1vw, 16px);
+  --file-item-px: clamp(10px, 1.2vw, 20px);
+  --file-icon-size: clamp(14px, 1.3vw, 18px);
+  --file-name-size: clamp(11px, 0.9vw, 14px);
+  --file-meta-size: clamp(9px, 0.7vw, 12px);
+
+  /* ─── NAV TABS ────────────────────────────────────────────
+     Section nav tabs in Files page
+  ──────────────────────────────────────────────────────────── */
+  --tab-px: clamp(8px, 1vw, 20px);
+  --tab-py: clamp(6px, 0.7vw, 12px);
+  --tab-text: clamp(10px, 0.85vw, 13px);
+  --tab-icon: clamp(12px, 1.1vw, 16px);
+
+  /* ─── TRANSITIONS ─────────────────────────────────────────────
+   Consistent animation timing throughout the app.
+   
+   cubic-bezier(0.4, 0, 0.2, 1) → Material Design "standard" easing
+     - Starts fast, decelerates smoothly — feels native/app-like
+     - Use for: sidebar, layout shifts, color changes
+   
+   cubic-bezier(0.34, 1.56, 0.64, 1) → Spring easing
+     - Slightly overshoots then settles — feels physical/alive
+     - Use for: buttons, cards, interactive elements
+──────────────────────────────────────────────────────────── */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1); /* hover states, color changes */
+  --transition-normal: 280ms cubic-bezier(0.4, 0, 0.2, 1); /* most UI transitions */
+  --transition-slow: 450ms cubic-bezier(0.4, 0, 0.2, 1); /* modals, large panels */
+  --transition-spring: 350ms cubic-bezier(0.34, 1.56, 0.64, 1); /* buttons, interactive pop */
+  --transition-sidebar: 300ms cubic-bezier(0.4, 0, 0.2, 1); /* sidebar collapse/expand */
+
+  /* ─── Z-INDEX SCALE ───────────────────────────────────────
+     Never guess z-index again
+  ──────────────────────────────────────────────────────────── */
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-nav: 20;
+  --z-panel: 30;
+  --z-modal: 50;
+  --z-toast: 100;
+}
+
+/* ─── UTILITY CLASSES ─────────────────────────────────────────
+   Use these directly in JSX className — no Tailwind conflict
+   Example: <div className="isa-card"> or <p className="isa-text-base">
+────────────────────────────────────────────────────────────── */
+
+/* Text utilities */
+.isa-text-xs {
+  font-size: var(--text-xs);
+}
+.isa-text-sm {
+  font-size: var(--text-sm);
+}
+.isa-text-base {
+  font-size: var(--text-base);
+}
+.isa-text-md {
+  font-size: var(--text-md);
+}
+.isa-text-lg {
+  font-size: var(--text-lg);
+}
+.isa-text-xl {
+  font-size: var(--text-xl);
+}
+.isa-text-xxl {
+  font-size: var(--text-xxl);
+}
+.isa-text-hero {
+  font-size: var(--text-hero);
+}
+
+/* Spacing utilities */
+.isa-p-sm {
+  padding: var(--space-sm);
+}
+.isa-p-md {
+  padding: var(--space-md);
+}
+.isa-p-lg {
+  padding: var(--space-lg);
+}
+.isa-p-xl {
+  padding: var(--space-xl);
+}
+
+/* Card — the base glass card used everywhere */
+.isa-card {
+  padding: var(--card-padding);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color var(--transition-fast);
+}
+.isa-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Button base */
+.isa-btn {
+  padding: var(--btn-py) var(--btn-px);
+  font-size: var(--text-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+.isa-btn-sm {
+  padding: var(--btn-py-sm) var(--btn-px);
+  font-size: var(--text-sm);
+}
+
+/* Section heading */
+.isa-section-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: white;
+}
+
+/* Muted label */
+.isa-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ─── Panel Slide-In Keyframe ─────────────────────────────────
+   Docked mode mein panel pehli baar open hone pe right se slide karta hai.
+   Overlay mode apna transform handle karta hai — ye sirf docked ke liye hai.
+──────────────────────────────────────────────────────────── */
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+
+/* ─── CONTAINER QUERY — Detail Panel ─────────────────────────
+   Panel ke andar ke elements panel ki OWN width ke
+   hisaab se scale honge — viewport se nahi.
+   
+   Kaise kaam karta hai:
+   1. aside pe container-type:inline-size lagao
+   2. @container query mein panel-specific overrides likho
+   3. cqi unit = % of container width (panel width)
+   
+   Ye isliye zaroori hai kyunki:
+   - vw tokens screen width se calculate hote hain
+   - Panel sirf 240-320px wide hoti hai
+   - Bina iske panel mein fonts zyada bade/chhote lag sakte hain
+──────────────────────────────────────────────────────────── */
+
+/* Panel wrapper ko container banao */
+.isa-panel-container {
+  container-type: inline-size;
+  container-name: detail-panel;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panel narrow hai (overlay mode, chhoti window) → sab compress */
+@container detail-panel (max-width: 280px) {
+  .isa-panel-title {
+    font-size: 13px;
+  }
+  .isa-panel-value {
+    font-size: 18px;
+  }
+  .isa-panel-hero {
+    font-size: 22px;
+  }
+  .isa-panel-label {
+    font-size: 9px;
+  }
+  .isa-panel-body {
+    font-size: 10px;
+  }
+  .isa-panel-icon-box {
+    padding: 10px;
+  }
+  .isa-card {
+    padding: 10px;
+  }
+}
+
+/* Panel medium width (docked, normal window) → comfortable */
+@container detail-panel (min-width: 281px) and (max-width: 340px) {
+  .isa-panel-title {
+    font-size: 15px;
+  }
+  .isa-panel-value {
+    font-size: 22px;
+  }
+  .isa-panel-hero {
+    font-size: 28px;
+  }
+  .isa-panel-label {
+    font-size: 10px;
+  }
+  .isa-panel-body {
+    font-size: 11px;
+  }
+  .isa-panel-icon-box {
+    padding: 14px;
+  }
+}
+
+/* Panel wide (docked, large window) → roomy */
+@container detail-panel (min-width: 341px) {
+  .isa-panel-title {
+    font-size: 17px;
+  }
+  .isa-panel-value {
+    font-size: 26px;
+  }
+  .isa-panel-hero {
+    font-size: 34px;
+  }
+  .isa-panel-label {
+    font-size: 11px;
+  }
+  .isa-panel-body {
+    font-size: 12px;
+  }
+  .isa-panel-icon-box {
+    padding: 18px;
+  }
+}

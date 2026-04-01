@@ -1,9 +1,25 @@
-@import './fonts.css';
-@import './tailwind.css';
-@import './theme.css';
+@import "./fonts.css";
+@import "./tailwind.css";
+@import "./theme.css";
+@import "./tokens.css";
 
 /* ISA Dark Mode Base */
 body {
-  background-color: #0F172A !important;
+  background-color: #0f172a !important;
   overflow: hidden;
+}
+
+/* ─── Panel Slide-In Keyframe ─────────────────────────────────
+   Docked mode mein panel pehli baar open hone pe right se slide karta hai.
+   Overlay mode apna transform handle karta hai — ye sirf docked ke liye hai.
+──────────────────────────────────────────────────────────── */
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
 }
